@@ -19,7 +19,7 @@
               <a :href="source.link" target="_blank">{{ source.link }}</a>
             </div>
             <div class="title date">
-              <p>Published: {{ source.date }}</p>
+              <p>Date added: {{ formatDate(source.created_at) }}</p>
             </div>
           </a>
         </div>
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+  import { read } from "fs";
   import SourceForm from "./SourceForm.vue";
   export default {
     name: "SourceListItem",
@@ -67,6 +68,10 @@
       },
     },
     methods: {
+      formatDate(date) {
+        var readable_date = new Date(date).toDateString();
+        return readable_date;
+      },
       handleUpdateSource(updatedSource) {
         this.$emit("onUpdateSource", updatedSource);
       },
@@ -75,7 +80,7 @@
         this.$emit("onToggleEditSource", this.source._id);
       },
       removeSource() {
-        this.$emit("onRemoveSource", this.source._id);
+        this.$emit("onRemoveSource", this.source.id);
       },
     },
   };

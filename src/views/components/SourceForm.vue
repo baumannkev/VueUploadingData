@@ -109,23 +109,24 @@
           .then((response) => response.json())
           .then((response) => {
             console.log(response);
-
-            fetch("http://10.0.0.49:3003/api/sources/", {
+            const endPointRoot = "http://localhost:3000/";
+            fetch(endPointRoot, {
               method: "POST",
               body: JSON.stringify({
+                mode: "create",
                 meta_description: response.article.meta_description,
                 title: self.title,
                 link: self.link,
                 notes: self.notes,
                 tags: self.tags,
-                date: response.article.published,
-                editMode: false,
+                // date: response.article.published,
+                // editMode: false,
               }),
               headers: {
                 "Content-type": "application/json; charset=UTF-8",
               },
             })
-              .then((data) => data.json())
+              .then((data) => data.data.json())
               .then((json) => {
                 console.log(json);
                 self.$emit("onNewSource", {
@@ -134,10 +135,10 @@
                   link: json.link,
                   notes: json.notes,
                   id: json.id,
-                  date: json.date,
+                  date: json.created_at,
                   tags: json.tags,
-                  isChecked: false,
-                  editMode: false,
+                  // isChecked: false,
+                  // editMode: false,
                 });
                 self.title = "";
                 self.link = "";

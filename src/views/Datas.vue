@@ -94,7 +94,6 @@
         source.isChecked = value;
       },
       handleToggleEditSource(id) {
-        // console.log(id);
         const sources = this.findSource(id);
         console.log("source ", sources.title);
         sources.editMode = !sources.editMode;
@@ -146,40 +145,23 @@
         // })
       },
       handleRemoveSource(id) {
-        this.sourceList = this.sourceList.filter((source) => source._id !== id);
-        console.log("id: ");
-        console.log("sourceList: ", this.sourceList);
-        let self = this;
-        // POST request using fetch()
-        fetch("http://10.0.0.49:3003/api/sources/" + id, {
-          // Adding method type
-          method: "DELETE",
-          // Adding body or contents to send
-          // body: JSON.stringify({
-          //   title: self.title,
-          //   link: self.link,
-          // }),
-          // Adding headers to the request
+        // Remove source from list
+        this.sourceList = this.sourceList.filter((source) => source.id !== id);
+        const endPointRoot = "http://localhost:3000/";
+        fetch(endPointRoot, {
+          method: "POST",
+          body: JSON.stringify({
+            mode: "delete",
+            sourceId: id,
+          }),
           headers: {
             "Content-type": "application/json; charset=UTF-8",
           },
         })
-          // Converting to JSON
           .then((response) => response.json())
-          // Displaying results to console
-          .then(
-            (json) => {
-              console.log("json ", json);
-            }
-
-            //   self.$emit("onNewSource", {
-            //   title: this.title,
-            //   link: this.link,
-            //   id: `source_${Math.random() * 10000}`,
-            //   isChecked: false,
-            //   editMode: false,
-            // });
-          );
+          .then((json) => {
+            console.log("json ", json);
+          });
       },
     },
     computed: {
@@ -192,21 +174,34 @@
         };
       },
     },
+    // Get all the sources when the page is created
     created() {
       let self = this;
-      const endPointRoot = "http://10.0.0.49:3003/api/sources/";
-
-      fetch(endPointRoot)
+      const endPointRoot = "http://localhost:3000/";
+      fetch(endPointRoot, {
+        // Adding method type
+        method: "POST",
+        // Adding body or contents to send
+        body: JSON.stringify({
+          mode: "read",
+        }),
+        // Adding headers to the request
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        // Converting to JSON
         .then((result) => {
           return result.json();
         })
         .then((data) => {
-          data.forEach(myFunction);
-
+          console.log(data);
+          data.data.forEach(myFunction);
           function myFunction(item, index) {
             self.handleNewSource(item);
           }
         });
+      console.log("list ", this.sourceList);
     },
     mounted() {},
     beforeDestroy() {},
